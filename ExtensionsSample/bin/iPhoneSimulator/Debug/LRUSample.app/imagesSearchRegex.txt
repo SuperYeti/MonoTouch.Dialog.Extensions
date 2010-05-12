@@ -1,0 +1,3 @@
+imagesRegex: (dyn\x2EImg\x28\x22[^\x22]*\x22,\x22[^\x22]*\x22,\x22(?<code>[^\x22]*)\x22,\x22(?<imgurl>[^\x22]*)\x22,\x22(?<width>[^\x22]*)\x22,\x22(?<height>[^\x22]*)\x22,[^\x29]*)
+dataRegex: (?<width>[0-9,]*)\s+x\s+(?<height>[0-9,]*)\s+(pixels\s+){0,1}-\s+(?<size>[0-9,]*)(k)
+totalResultsRegex: (?<upperLimit>upperLimit>(\s)*)(?<lastResult>[0-9,]*)([^=])*=(?<maxLimit>maxLimit>(\s)*)(?<totalResultsAvailable>[0-9,]*)

@@ -1,0 +1,32 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" ctype="Workspace" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="../MonoTouch.Dialog/MonoTouch.Dialog/Elements.cs" ctype="Workbench">
+    <Files>
+      <File FileName="../ClarityMobile/ClarityMobile/Projects.cs" Line="1" Column="1" />
+      <File FileName="../MonoTouch.Dialog/MonoTouch.Dialog/Elements.cs" Line="403" Column="4" />
+      <File FileName="MonoTouch.LRUImageStore/LRUCache.cs" Line="1" Column="1" />
+      <File FileName="MonoTouch.LRUImageStore/ImageStore.cs" Line="237" Column="5" />
+      <File FileName="MonoTouch.LRUImageStore/UrlImageStringCell.cs" Line="1" Column="1" />
+      <File FileName="LRUSample/MainWindow.xib.designer.cs" Line="1" Column="1" />
+      <File FileName="LRUSample/Main.cs" Line="1" Column="1" />
+      <File FileName="MonoTouch.LRUImageStore/Graphics.cs" Line="50" Column="1" />
+      <File FileName="../../../../Volumes/Data/www/secure.cardcana.net v2 CS/CCCLib/Image/ImageResize.cs" Line="195" Column="6" />
+    </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="LRUSample" expanded="True">
+            <Node name="References" expanded="True" />
+            <Node name="Main.cs" selected="True" />
+          </Node>
+          <Node name="MonoTouch.LRUImageStore" expanded="True">
+            <Node name="References" expanded="True" />
+          </Node>
+        </State>
+      </Pad>
+      <Pad Id="ClassPad">
+        <State expanded="True" selected="True" />
+      </Pad>
+    </Pads>
+  </MonoDevelop.Ide.Workbench>
+</Properties>

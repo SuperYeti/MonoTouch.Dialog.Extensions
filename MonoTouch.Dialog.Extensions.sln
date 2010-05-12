@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoTouch.LRUImageStore", "MonoTouch.LRUImageStore\MonoTouch.LRUImageStore.csproj", "{FCAC0668-BF8E-480C-BC00-19B8967C50EE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LRUSample", "LRUSample\LRUSample.csproj", "{59D4E86B-956A-42AF-BC37-DD20EE33D16F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|iPhoneSimulator = Debug|iPhoneSimulator
+		Release|iPhoneSimulator = Release|iPhoneSimulator
+		Debug|iPhone = Debug|iPhone
+		Release|iPhone = Release|iPhone
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{59D4E86B-956A-42AF-BC37-DD20EE33D16F}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{59D4E86B-956A-42AF-BC37-DD20EE33D16F}.Debug|iPhone.Build.0 = Debug|iPhone
+		{59D4E86B-956A-42AF-BC37-DD20EE33D16F}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{59D4E86B-956A-42AF-BC37-DD20EE33D16F}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{59D4E86B-956A-42AF-BC37-DD20EE33D16F}.Release|iPhone.ActiveCfg = Release|iPhone
+		{59D4E86B-956A-42AF-BC37-DD20EE33D16F}.Release|iPhone.Build.0 = Release|iPhone
+		{59D4E86B-956A-42AF-BC37-DD20EE33D16F}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{59D4E86B-956A-42AF-BC37-DD20EE33D16F}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+		{FCAC0668-BF8E-480C-BC00-19B8967C50EE}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{FCAC0668-BF8E-480C-BC00-19B8967C50EE}.Debug|iPhone.Build.0 = Debug|iPhone
+		{FCAC0668-BF8E-480C-BC00-19B8967C50EE}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{FCAC0668-BF8E-480C-BC00-19B8967C50EE}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{FCAC0668-BF8E-480C-BC00-19B8967C50EE}.Release|iPhone.ActiveCfg = Release|iPhone
+		{FCAC0668-BF8E-480C-BC00-19B8967C50EE}.Release|iPhone.Build.0 = Release|iPhone
+		{FCAC0668-BF8E-480C-BC00-19B8967C50EE}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{FCAC0668-BF8E-480C-BC00-19B8967C50EE}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = LRUSample\LRUSample.csproj
+	EndGlobalSection
+EndGlobal
