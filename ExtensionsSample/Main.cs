@@ -8,10 +8,10 @@ using System.IO;
 using System.Linq;
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
-using MonoTouch.LRUImageStore;
+using MonoTouch.Dialog.Extensions;
 using MonoTouch.Dialog;
 
-namespace LRUSample
+namespace ExtensionsSample
 {
 	public class Application
 	{
@@ -24,6 +24,17 @@ namespace LRUSample
 	// The name AppDelegate is referenced in the MainWindow.xib file.
 	public partial class AppDelegate : UIApplicationDelegate
 	{
+		public override void ReceiveMemoryWarning (UIApplication application)
+		{
+			//You should not call base in this method :)
+			//base.ReceiveMemoryWarning (application);
+			
+			Console.WriteLine("Low Memory Detected.  Cleaning up LRU image cache");
+			
+			ImageStore.ReclaimMemory();
+			
+		}
+		
 		// This method is invoked when the application has loaded its UI and its ready to run
 		public override bool FinishedLaunching (UIApplication app, NSDictionary options)
 		{
@@ -105,7 +116,7 @@ namespace LRUSample
 						string strUrl = uri.ToString();
 						
 						if(strUrl.ToLower().IndexOf("file://") == -1)
-							results.Add(strUrl.Substring(strUrl.IndexOf("http://",8)));
+							results.Add(strUrl);
 						
 					}
 	
@@ -129,38 +140,11 @@ namespace LRUSample
 			int i = 1;
 			RootElement root = new RootElement("Test Image Loader");
 			
-			foreach(string result in SearchImages("android", 1, 99,false))
+			foreach(string result in SearchImages("MonoTouch", 1, 99,false))
 			{
 				UrlImageStringElement element = new UrlImageStringElement(result,i,result);
-				element.Tapped+= delegate {
-					string strUrl = result;
-					var vc = new WebViewController (this);
-					web = new UIWebView (UIScreen.MainScreen.ApplicationFrame){
-						BackgroundColor = UIColor.White,
-						ScalesPageToFit = true,
-						AutoresizingMask = UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight
-					};
-					web.LoadStarted += delegate {
-						NetworkActivity = true;
-					};
-					web.LoadFinished += delegate {
-						NetworkActivity = false;
-					};
-					web.LoadError += (webview, args) => {
-						NetworkActivity = false;
-						if (web != null)
-							web.LoadHtmlString (String.Format ("<html><center><font size=+5 color='red'>An error occurred:<br>{0}</font></center></html>", args.Error.LocalizedDescription), null);
-					};
-					vc.NavigationItem.Title = Caption;
-					vc.View.AddSubview (web);
-					
-					dvc.ActivateController (vc);
-					web.LoadRequest (NSUrlRequest.FromUrl (new NSUrl (Url)));
-					
-				};
 				
-				root.Add(new Section(){});
-				
+				root.Add(new Section(){element});
 				
 				i++;
 			}
@@ -170,10 +154,6 @@ namespace LRUSample
 			navigation.PushViewController(dvc,true);
 			
 		}
-
-		void HandleNewImgOnImageUpdated (object sender, EventArgs e)
-		{
-		}		                       
 
 		// This method is required in iPhoneOS 3.0
 		public override void OnActivated (UIApplication application)

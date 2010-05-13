@@ -9,7 +9,7 @@ using MonoTouch.Foundation;
 using MonoTouch.UIKit;
 using MonoTouch.CoreGraphics;
 
-namespace MonoTouch.LRUImageStore
+namespace MonoTouch.Dialog.Extensions
 {
 	public interface IImageUpdated {
 		void UpdatedImage (long id);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MonoTouch.LRUImageStore
+namespace MonoTouch.Dialog.Extensions
 {
 	public class IndexedLinkedList<T> {
 

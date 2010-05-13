@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoTouch.LRUImageStore", "MonoTouch.LRUImageStore\MonoTouch.LRUImageStore.csproj", "{FCAC0668-BF8E-480C-BC00-19B8967C50EE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoTouch.Dialog.Extensions", "MonoTouch.Dialog.Extensions\MonoTouch.Dialog.Extensions.csproj", "{FCAC0668-BF8E-480C-BC00-19B8967C50EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LRUSample", "LRUSample\LRUSample.csproj", "{59D4E86B-956A-42AF-BC37-DD20EE33D16F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExtensionsSample", "ExtensionsSample\ExtensionsSample.csproj", "{59D4E86B-956A-42AF-BC37-DD20EE33D16F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +31,6 @@ Global
 		{FCAC0668-BF8E-480C-BC00-19B8967C50EE}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
-		StartupItem = LRUSample\LRUSample.csproj
+		StartupItem = ExtensionsSample\ExtensionsSample.csproj
 	EndGlobalSection
 EndGlobal

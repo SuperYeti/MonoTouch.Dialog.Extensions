@@ -6,7 +6,7 @@ using System.Threading;
 using MonoTouch.UIKit;
 using MonoTouch.Foundation;
 
-namespace MonoTouch.LRUImageStore
+namespace MonoTouch.Dialog.Extensions
 {
 	public static class Util
 	{

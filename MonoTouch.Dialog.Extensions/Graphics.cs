@@ -6,7 +6,7 @@ using System.Drawing;
 using MonoTouch.CoreGraphics;
 using MonoTouch.UIKit;
 
-namespace MonoTouch.LRUImageStore
+namespace MonoTouch.Dialog.Extensions
 {
 	public static class Graphics
 	{

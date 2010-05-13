@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace MonoTouch.LRUImageStore
+namespace MonoTouch.Dialog.Extensions
 {
 	public class LRUCache<TKey, TValue> : IDictionary<TKey, TValue> {
 
@@ -83,10 +83,10 @@ namespace MonoTouch.LRUImageStore
 		
 		public void ReclaimLRU(int itemsToReclaim)
 		{
-			while(itemsToReclaim-- >= 0 && lruList.First != null)
+			while(--itemsToReclaim >= 0 && lruList.First != null)
 			{
 			    Remove(lruList.First);
-	            lruList.RemoveFirst();
+	            //lruList.RemoveFirst();
 			}
         
 		}

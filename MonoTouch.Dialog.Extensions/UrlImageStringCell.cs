@@ -11,7 +11,7 @@ using MonoTouch.UIKit;
 using MonoTouch.CoreGraphics;
 using MonoTouch.Dialog;
 
-namespace MonoTouch.LRUImageStore
+namespace MonoTouch.Dialog.Extensions
 {
 	public class UrlImageStringCell : UITableViewCell, IImageUpdated {
 		// Do these as static to reuse across all instances
