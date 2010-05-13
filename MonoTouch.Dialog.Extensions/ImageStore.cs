@@ -94,7 +94,6 @@ namespace MonoTouch.Dialog.Extensions
 				Directory.CreateDirectory (RoundedPicDir);
 
 			capacity = 100;
-			Init();
 			
 		}
 		
@@ -108,10 +107,7 @@ namespace MonoTouch.Dialog.Extensions
 		
 		public static void ClearCache()
 		{
-			cache.Clear();
-			pendingRequests.Clear();
-			queuedUpdates.Clear();
-			requestQueue.Clear();
+			Init();
 			
 			var PicDir = Path.Combine (Util.BaseDir, "Library/Caches/Pictures");
 			var TmpDir = Path.Combine (Util.BaseDir, "tmp/downloads/");
@@ -216,15 +212,18 @@ namespace MonoTouch.Dialog.Extensions
 
 			if (pendingRequests.ContainsKey (id)){
 				pendingRequests [id].Add (notify);
-				return;
 			}
-			var slot = new List<IImageUpdated> (MaxRequests);
-			slot.Add (notify);
-			pendingRequests [id] = slot;
-			if (pendingRequests.Count >= MaxRequests){
+			else
+			{
+				var slot = new List<IImageUpdated>();
+				slot.Add (notify);
+				pendingRequests.Add(id,slot);
+			}
+			if (ThreadCount >=  MaxRequests){
 				lock (requestQueue)
 				{
 					requestQueue.Enqueue (id);
+	
 				}
 			} else {
 				ThreadPool.QueueUserWorkItem (delegate { 
@@ -236,9 +235,14 @@ namespace MonoTouch.Dialog.Extensions
 				});
 			}
 		}
+		
+		static int ThreadCount;
 				
 		static void StartImageDownload (long id, Uri url)
 		{
+			ThreadCount++;
+			
+			Util.PushNetworkActive();
 			do {
 				var buffer = new byte [4*1024];
 				
@@ -281,6 +285,10 @@ namespace MonoTouch.Dialog.Extensions
 				if (doInvoke)
 					nsDispatcher.BeginInvokeOnMainThread (NotifyImageListeners);
 			} while (id != -1);
+			
+			Util.PopNetworkActive();
+			
+			ThreadCount--;
 			
 		}
 		

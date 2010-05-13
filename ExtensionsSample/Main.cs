@@ -78,6 +78,7 @@ namespace ExtensionsSample
 
 		public static string[] SearchImages (string query, int startPosition, int resultsRequested, bool filterSimilarResults)
 		{
+			Util.PushNetworkActive();
 			// Check preconditions
 			if (resultsRequested < 1) {
 				throw new ArgumentOutOfRangeException ("resultsRequested", "Value must be positive");
@@ -102,7 +103,6 @@ namespace ExtensionsSample
 			// I'm leaving the flag on anyway, in case they decide to start respecting it correctly...
 			for (int i = 0; i < resultsRequested; i += 20) {
 				string requestUri = string.Format ("http://images.google.com/images?q={0}&ndsp={1}&start={2}&filter={3}&safe={4}", query, "20", (startPosition + i).ToString (), (filterSimilarResults) ? "1" : "0", safeSearchStr);
-				
 				HttpWebRequest request = (HttpWebRequest)WebRequest.Create (requestUri);
 				string resultPage = string.Empty;
 				using (HttpWebResponse httpWebResponse = (HttpWebResponse)request.GetResponse ()) {
@@ -128,7 +128,11 @@ namespace ExtensionsSample
 					if (Uri.TryCreate (strPageURL, UriKind.Absolute, out uri)) {
 						string strUrl = uri.ToString ();
 						
-						if (strUrl.ToLower ().IndexOf ("file://") == -1)
+						if (strUrl.ToLower ().IndexOf ("file://") == -1 &&
+					    (strUrl.ToLower ().IndexOf (".jpg") >= 0 ||
+					    strUrl.ToLower ().IndexOf (".jpeg") >= 0 ||
+					    strUrl.ToLower ().IndexOf (".png") >= 0 )
+					    )
 							results.Add (strUrl);
 						
 					}
@@ -141,7 +145,7 @@ namespace ExtensionsSample
 				}
 				
 			}
-			
+			Util.PopNetworkActive();
 			return (string[])results.ToArray (typeof(string));
 			
 		}
@@ -152,12 +156,6 @@ namespace ExtensionsSample
 			
 			DialogViewController dvc = new DialogViewController (root) { RotateUIEnabled = true };
 			
-			var f = new RectangleF (0f, 0f, dvc.View.Bounds.Width, 44f);
-			SearchDelegate searchDelegate = new SearchDelegate();
-			searchDelegate.OnSearch+= HandleSearchDelegateOnSearch;
-		
-			bar = new UISearchBar (f) { Delegate = searchDelegate, ShowsCancelButton = true };
-			
 			dvc.View.InsertSubview (bar, 0);
 			
 			navigation.PushViewController (dvc, true);
@@ -166,8 +164,6 @@ namespace ExtensionsSample
 
 		void CreateImages (string searchTerm)
 		{
-			Util.PushNetworkActive();
-			
 			ImageStore.ClearCache();
 
 			int i = 1;
@@ -175,7 +171,7 @@ namespace ExtensionsSample
 		
 			if(!string.IsNullOrEmpty(searchTerm))
 			{
-				foreach (string result in SearchImages (searchTerm, 1, 99, false)) {
+				foreach (string result in SearchImages (searchTerm, 1, 100, false)) {
 					UrlImageStringElement element = new UrlImageStringElement (result, i, result);
 					
 					root.Add (new Section { element });
@@ -188,8 +184,6 @@ namespace ExtensionsSample
 			
 			navigation.PushViewController (dvc, true);
 			
-			Util.PopNetworkActive();
-			
 		}
 	
 		void HandleSearchDelegateOnSearch (object sender, EventArgs e)
@@ -199,8 +193,24 @@ namespace ExtensionsSample
 			
 		}
 		
-
-		UISearchBar bar;
+		UISearchBar _bar;
+		
+		public UISearchBar bar
+		{
+			get{
+				if(_bar == null)
+				{
+					var f = new RectangleF (0f, 0f, this.window.Bounds.Width, 44f);
+					SearchDelegate searchDelegate = new SearchDelegate();
+					searchDelegate.OnSearch+= HandleSearchDelegateOnSearch;
+				
+					_bar = new UISearchBar (f) { Delegate = searchDelegate, ShowsCancelButton = true };
+					
+				}
+				
+				return _bar;
+			}
+		}
 		
 		class SearchDelegate : UISearchBarDelegate
 		{
@@ -213,7 +223,7 @@ namespace ExtensionsSample
 				if(!string.IsNullOrEmpty(bar.Text))
 				   if(OnSearch != null)
 						OnSearch(this,new EventArgs());
-				   	
+				   		
 			}
 
 			public override void CancelButtonClicked (UISearchBar bar)
