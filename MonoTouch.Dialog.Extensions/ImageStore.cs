@@ -237,6 +237,8 @@ namespace MonoTouch.Dialog.Extensions
 				
 		static void StartImageDownload (long id, Uri url)
 		{
+			Util.PushNetworkActive();
+			
 			do {
 				var buffer = new byte [4*1024];
 				
@@ -276,6 +278,9 @@ namespace MonoTouch.Dialog.Extensions
 				if (doInvoke)
 					nsDispatcher.BeginInvokeOnMainThread (NotifyImageListeners);
 			} while (id != -1);
+			
+			Util.PopNetworkActive();
+			
 		}
 		
 		// Runs on the main thread

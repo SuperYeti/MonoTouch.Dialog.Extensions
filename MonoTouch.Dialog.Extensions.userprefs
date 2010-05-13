@@ -1,23 +1,16 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" ctype="Workspace" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="ExtensionsSample/Main.cs" ctype="Workbench">
-    <Files>
-      <File FileName="../ClarityMobile/ClarityMobile/Projects.cs" Line="1" Column="1" />
-      <File FileName="../../../../Volumes/Data/www/secure.cardcana.net v2 CS/CCCLib/Image/ImageResize.cs" Line="1" Column="1" />
-      <File FileName="MonoTouch.Dialog.Extensions/Graphics.cs" Line="1" Column="1" />
-      <File FileName="ExtensionsSample/Main.cs" Line="146" Column="5" />
-      <File FileName="MonoTouch.Dialog.Extensions/IndexedLinkedList.cs" Line="43" Column="1" />
-    </Files>
+  <MonoDevelop.Ide.Workbench ctype="Workbench">
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="ExtensionsSample" expanded="True">
             <Node name="References" expanded="True" />
-            <Node name="Main.cs" selected="True" />
             <Node name="MainWindow.xib" expanded="True" />
           </Node>
           <Node name="MonoTouch.Dialog.Extensions" expanded="True">
             <Node name="References" expanded="True" />
+            <Node name="Graphics.cs" selected="True" />
           </Node>
         </State>
       </Pad>

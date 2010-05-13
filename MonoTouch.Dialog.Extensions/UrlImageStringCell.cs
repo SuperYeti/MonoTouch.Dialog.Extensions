@@ -147,6 +147,7 @@ namespace MonoTouch.Dialog.Extensions
 
 			imageView.Alpha = 0;
 			imageView.Image = ImageStore.GetImage (onId);
+			imageView.SizeToFit();
 
 			UIView.BeginAnimations (null, IntPtr.Zero);
 			UIView.SetAnimationDuration (0.5);

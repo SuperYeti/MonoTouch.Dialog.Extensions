@@ -83,7 +83,4 @@
   <ItemGroup>
     <Content Include="Images\default.png" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="LICENSE" />
-  </ItemGroup>
 </Project>

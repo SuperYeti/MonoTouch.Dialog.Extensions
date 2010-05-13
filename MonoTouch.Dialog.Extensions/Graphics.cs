@@ -41,15 +41,18 @@ namespace MonoTouch.Dialog.Extensions
 			if (image == null)
 				throw new ArgumentNullException ("image");
 			
-            UIGraphics.BeginImageContext (new SizeF (48, 48));
+            UIGraphics.BeginImageContext (image.Size);
+			float imgWidth = image.Size.Width;
+			float imgHeight = image.Size.Height;
+
             var c = UIGraphics.GetCurrentContext ();
 
             c.BeginPath ();
-            c.MoveTo (48, 24);
-            c.AddArcToPoint (48, 48, 24, 48, 4);
-            c.AddArcToPoint (0, 48, 0, 24, 4);
-            c.AddArcToPoint (0, 0, 24, 0, 4);
-            c.AddArcToPoint (48, 0, 48, 24, 4);
+            c.MoveTo (imgWidth, imgHeight/2);
+            c.AddArcToPoint (imgWidth, imgHeight, imgWidth/2, imgHeight, 4);
+            c.AddArcToPoint (0, imgHeight, 0, imgHeight/2, 4);
+            c.AddArcToPoint (0, 0, imgWidth/2, 0, 4);
+            c.AddArcToPoint (imgWidth, 0, imgWidth, imgHeight/2, 4);
             c.ClosePath ();
             c.Clip ();
 
