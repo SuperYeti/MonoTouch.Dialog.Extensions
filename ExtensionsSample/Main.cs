@@ -71,9 +71,7 @@ namespace ExtensionsSample
 			
 			window.MakeKeyAndVisible ();
 			
-			Util.PushNetworkActive();
 			CreateSearch();
-			Util.PopNetworkActive();
 			
 			return true;
 		}

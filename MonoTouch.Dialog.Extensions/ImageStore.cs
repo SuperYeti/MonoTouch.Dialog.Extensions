@@ -206,7 +206,7 @@ namespace MonoTouch.Dialog.Extensions
 		// one lookup, it can be null if not known
 		//
 		public static void QueueRequestForImage (long id, string optionalUrl, IImageUpdated notify)
-		{
+		{	
 			if (notify == null)
 				throw new ArgumentNullException ("notify");
 			
@@ -218,12 +218,14 @@ namespace MonoTouch.Dialog.Extensions
 				pendingRequests [id].Add (notify);
 				return;
 			}
-			var slot = new List<IImageUpdated> (4);
+			var slot = new List<IImageUpdated> (MaxRequests);
 			slot.Add (notify);
 			pendingRequests [id] = slot;
 			if (pendingRequests.Count >= MaxRequests){
 				lock (requestQueue)
+				{
 					requestQueue.Enqueue (id);
+				}
 			} else {
 				ThreadPool.QueueUserWorkItem (delegate { 
 					try {
@@ -237,8 +239,6 @@ namespace MonoTouch.Dialog.Extensions
 				
 		static void StartImageDownload (long id, Uri url)
 		{
-			Util.PushNetworkActive();
-			
 			do {
 				var buffer = new byte [4*1024];
 				
@@ -251,6 +251,7 @@ namespace MonoTouch.Dialog.Extensions
 							while ((n = s.Read (buffer, 0, buffer.Length)) > 0){
 								file.Write (buffer, 0, n);
 	                        }
+							file.Flush();
 						}
 	                }
 				}
@@ -261,7 +262,7 @@ namespace MonoTouch.Dialog.Extensions
 					queuedUpdates.Add (id);
 					
 					// If this is the first queued update, must notify
-					if (queuedUpdates.Count == 1)
+					if (queuedUpdates.Count > 0)
 						doInvoke = true;
 				}
 				
@@ -269,17 +270,17 @@ namespace MonoTouch.Dialog.Extensions
 				lock (requestQueue){
 					if (requestQueue.Count > 0){
 						id = requestQueue.Dequeue ();
-						url = GetImageUrlFromId (id, null);
-						if (url == null)
-							id = -1;
 					} else
 						id = -1;
-				}				
+				}
+			
+				url = GetImageUrlFromId (id, null);
+				if (url == null)
+					id = -1;
+									
 				if (doInvoke)
 					nsDispatcher.BeginInvokeOnMainThread (NotifyImageListeners);
 			} while (id != -1);
-			
-			Util.PopNetworkActive();
 			
 		}
 		
@@ -290,12 +291,13 @@ namespace MonoTouch.Dialog.Extensions
 			lock (queuedUpdates){
 				foreach (var qid in queuedUpdates){
 					var list = pendingRequests [qid];
-					pendingRequests.Remove (qid);
+					long lID = qid;
+					pendingRequests.Remove (lID);
 					foreach (var pr in list){
-						pr.UpdatedImage (qid);
-					}
+						pr.UpdatedImage (lID);
+					}	
 				}
-				queuedUpdates.Clear ();
+				queuedUpdates.Clear();
 			}
 			} catch (Exception e){
 				Console.WriteLine (e);

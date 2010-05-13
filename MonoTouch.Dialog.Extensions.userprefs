@@ -1,16 +1,20 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" ctype="Workspace" />
-  <MonoDevelop.Ide.Workbench ctype="Workbench">
+  <MonoDevelop.Ide.Workbench ActiveDocument="MonoTouch.Dialog.Extensions/ImageStore.cs" ctype="Workbench">
+    <Files>
+      <File FileName="MonoTouch.Dialog.Extensions/ImageStore.cs" Line="324" Column="16" />
+      <File FileName="MonoTouch.Dialog.Extensions/Graphics.cs" Line="1" Column="1" />
+      <File FileName="ExtensionsSample/Main.cs" Line="1" Column="1" />
+    </Files>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
-          <Node name="ExtensionsSample" expanded="True">
+          <Node name="ExtensionsSample" expanded="True" selected="True">
             <Node name="References" expanded="True" />
             <Node name="MainWindow.xib" expanded="True" />
           </Node>
           <Node name="MonoTouch.Dialog.Extensions" expanded="True">
             <Node name="References" expanded="True" />
-            <Node name="Graphics.cs" selected="True" />
           </Node>
         </State>
       </Pad>
