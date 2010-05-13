@@ -56,6 +56,9 @@ namespace MonoTouch.Dialog.Extensions
 			SmallPicDir = Path.Combine (PicDir, "Scaled/");
 			RoundedPicDir = Path.Combine (PicDir, "Rounded/");
 				
+			if(!Directory.Exists(PicDir))
+				Directory.CreateDirectory(PicDir);
+			
 			if (!Directory.Exists (SmallPicDir))
 				Directory.CreateDirectory (SmallPicDir);
 			
@@ -76,6 +79,46 @@ namespace MonoTouch.Dialog.Extensions
 			pendingRequests = new Dictionary<long,List<IImageUpdated>> ();
 			queuedUpdates = new HashSet<long>();
 			requestQueue = new Queue<long> ();
+		}
+		
+		public static void ClearCache()
+		{
+			cache.Clear();
+			pendingRequests.Clear();
+			queuedUpdates.Clear();
+			requestQueue.Clear();
+			
+			var PicDir = Path.Combine (Util.BaseDir, "Library/Caches/Pictures");
+			var TmpDir = Path.Combine (Util.BaseDir, "tmp/downloads/");
+			var SmallPicDir = Path.Combine (PicDir, "Scaled/");
+			var RoundedPicDir = Path.Combine (PicDir, "Rounded/");
+			
+			if(Directory.Exists(PicDir))
+				foreach(string fil in Directory.GetFiles(PicDir))
+				{
+					File.Delete(fil);
+				}
+			
+			if (Directory.Exists (SmallPicDir))
+				foreach(string fil in Directory.GetFiles(SmallPicDir))
+				{
+					File.Delete(fil);
+				}
+
+			
+			if (Directory.Exists (TmpDir))
+				foreach(string fil in Directory.GetFiles(TmpDir))
+				{
+					File.Delete(fil);
+				}
+
+			
+			if (Directory.Exists (RoundedPicDir))
+				foreach(string fil in Directory.GetFiles(RoundedPicDir))
+				{
+					File.Delete(fil);
+				}
+			
 		}
 		
 		public static UIImage GetImage (long id)
