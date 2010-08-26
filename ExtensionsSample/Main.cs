@@ -160,19 +160,31 @@ namespace ExtensionsSample
 			
 			navigation.PushViewController (dvc, true);
 				
-		}
-
+		} 
+		
 		void CreateImages (string searchTerm)
 		{
 			ImageStore.ClearCache();
 
 			int i = 1;
 			RootElement root = new RootElement (searchTerm + " Results");
-		
+			SpiffyViewDemo svd;
+			
 			if(!string.IsNullOrEmpty(searchTerm))
 			{
-				foreach (string result in SearchImages (searchTerm, 1, 100, false)) {
+				foreach (string result in SearchImages (searchTerm, 1, 100, false)) 
+				{
+					long imageId = i;
+					string imageUrl = result;
+						
 					UrlImageStringElement element = new UrlImageStringElement (result, i, result);
+					
+					element.Tapped += delegate
+					{
+						svd = new SpiffyViewDemo(navigation);
+						svd.Show(imageId, imageUrl);
+						
+					};
 					
 					root.Add (new Section { element });
 					
@@ -185,7 +197,7 @@ namespace ExtensionsSample
 			navigation.PushViewController (dvc, true);
 			
 		}
-	
+		
 		void HandleSearchDelegateOnSearch (object sender, EventArgs e)
 		{
 			if(bar != null)

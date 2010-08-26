@@ -8,6 +8,8 @@
     <string>ExtensionsSample</string>
     <key>CFBundleExecutable</key>
     <string>ExtensionsSample</string>
+    <key>CFBundleIconFiles</key>
+    <array />
     <key>CFBundleIdentifier</key>
     <string>com.yourcompany.extensionssample</string>
     <key>CFBundleInfoDictionaryVersion</key>
@@ -27,11 +29,17 @@
     <key>DTPlatformName</key>
     <string>iphonesimulator</string>
     <key>DTSDKName</key>
-    <string>iphonesimulator3.1.3</string>
+    <string>iphonesimulator4.0</string>
     <key>LSRequiresIPhoneOS</key>
     <true />
+    <key>UIDeviceFamily</key>
+    <array>
+      <integer>1</integer>
+    </array>
     <key>DTPlatformVersion</key>
-    <string>3.1.3</string>
+    <string>4.0 GM</string>
+    <key>MinimumOSVersion</key>
+    <string>3.2</string>
     <key>NSMainNibFile</key>
     <string>MainWindow</string>
   </dict>
