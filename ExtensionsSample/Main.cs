@@ -154,14 +154,14 @@ namespace ExtensionsSample
 		{
 			RootElement root = new RootElement("Search Google Images");
 			
-			DialogViewController dvc = new DialogViewController (root) { RotateUIEnabled = true };
+			DialogViewController dvc = new DialogViewController (root) { Autorotate = true };
 			
 			dvc.View.InsertSubview (bar, 0);
 			
 			navigation.PushViewController (dvc, true);
 				
 		} 
-		
+	
 		void CreateImages (string searchTerm)
 		{
 			ImageStore.ClearCache();
@@ -176,7 +176,9 @@ namespace ExtensionsSample
 				{
 					long imageId = i;
 					string imageUrl = result;
-						
+					
+					UIFont fTest = new UIFont();
+					
 					UrlImageStringElement element = new UrlImageStringElement (result, i, result);
 					
 					element.Tapped += delegate
@@ -192,7 +194,7 @@ namespace ExtensionsSample
 				}
 			}
 			
-			DialogViewController dvc = new DialogViewController (root,true) { RotateUIEnabled = true };
+			DialogViewController dvc = new DialogViewController (root,true) { Autorotate = true };
 			
 			navigation.PushViewController (dvc, true);
 			
