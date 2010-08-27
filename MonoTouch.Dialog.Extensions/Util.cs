@@ -29,6 +29,15 @@ using System.Text;
 using System.Threading;
 using MonoTouch.UIKit;
 using MonoTouch.Foundation;
+using System.Collections;
+using System.Net;
+using System.Net.Sockets;
+using System.Security;
+using System.Security.Cryptography;
+using System.Reflection;
+using System.Xml.Serialization;
+using System.Text.RegularExpressions;
+using MonoTouch;
 
 namespace MonoTouch.Dialog.Extensions
 {
@@ -124,5 +133,356 @@ namespace MonoTouch.Dialog.Extensions
 			}
 			return sb.ToString ();
 		}
+	
+		public static string ObscureString (string value)
+		{
+			StringBuilder sb = new StringBuilder ();
+			
+			if (value.Length >= 4) {
+				sb.Append (char.Parse ("*"), value.Length - 4);
+				sb.Append (value.Substring (value.Length - 4));
+			} else {
+				sb.Append (value);
+			}
+			
+			return sb.ToString ();
+			
+		}
+
+		public static void SuccessfulMessage ()
+		{
+			UIApplication.SharedApplication.InvokeOnMainThread (delegate {
+				var msg = new UIAlertView ("Success", "Saved Succcessfully", null, "Ok");
+				msg.Transform = MonoTouch.CoreGraphics.CGAffineTransform.MakeTranslation (0f, 110f);
+				msg.Show ();
+			});
+			
+		}
+
+		public static void SuccessfulMessage (string message)
+		{
+			UIApplication.SharedApplication.InvokeOnMainThread (delegate {
+				var msg = new UIAlertView ("Success", message, null, "Ok");
+				msg.Transform = MonoTouch.CoreGraphics.CGAffineTransform.MakeTranslation (0f, 110f);
+				msg.Show ();
+			});
+		}
+
+		public static void UnsuccessfulMessage ()
+		{
+			UIApplication.SharedApplication.InvokeOnMainThread (delegate {
+				var msg = new UIAlertView ("Error", "Save UnSuccessful, Please try again", null, "Ok");
+				msg.Transform = MonoTouch.CoreGraphics.CGAffineTransform.MakeTranslation (0f, 110f);
+				msg.Show ();
+			});
+			
+		}
+
+		public static void UnsuccessfulMessage (string message)
+		{
+			UIApplication.SharedApplication.InvokeOnMainThread (delegate {
+				var msg = new UIAlertView ("Error", message, null, "Ok");
+				msg.Transform = MonoTouch.CoreGraphics.CGAffineTransform.MakeTranslation (0f, 110f);
+				msg.Show ();
+			});
+		}
+
+		public static void MessageAndRedirect (string message, NSAction action)
+		{
+			UIApplication.SharedApplication.InvokeOnMainThread (delegate {
+				var msg = new UIAlertView ("Info", message, null, "Ok");
+				msg.Clicked += delegate { UIApplication.SharedApplication.InvokeOnMainThread (action); };
+				msg.Transform = MonoTouch.CoreGraphics.CGAffineTransform.MakeTranslation (0f, 110f);
+				msg.Show ();
+			});
+			
+		}
+	
 	}
+	
+	public static class Device
+	{
+		public static string DeviceID ()
+		{
+			return UIDevice.CurrentDevice.UniqueIdentifier;
+			
+		}
+
+		public static string IPAddress ()
+		{
+			IPHostEntry host;
+			string localIP = "?";
+			host = Dns.GetHostEntry (Dns.GetHostName ());
+			
+			foreach (IPAddress ip in host.AddressList) {
+				if (ip.AddressFamily == AddressFamily.InterNetwork) {
+					localIP = ip.ToString ();
+				}
+			}
+			
+			return localIP;
+			
+		}
+		
+		public static  string Documents = Environment.GetFolderPath (Environment.SpecialFolder.Personal);
+		
+	}
+
+	public static class Encryption
+	{
+		public static string EncryptString (string toEncrypt, string bkey)
+		{
+			byte[] keyArray;
+			byte[] toEncryptArray = UTF8Encoding.UTF8.GetBytes (toEncrypt);
+			
+			MD5CryptoServiceProvider hashmd5 = new MD5CryptoServiceProvider ();
+			keyArray = hashmd5.ComputeHash (UTF8Encoding.UTF8.GetBytes (bkey));
+			
+			TripleDESCryptoServiceProvider tdes = new TripleDESCryptoServiceProvider ();
+			tdes.Key = keyArray;
+			tdes.Mode = CipherMode.ECB;
+			tdes.Padding = PaddingMode.PKCS7;
+			
+			ICryptoTransform cTransform = tdes.CreateEncryptor ();
+			byte[] resultArray = cTransform.TransformFinalBlock (toEncryptArray, 0, toEncryptArray.Length);
+			
+			return Convert.ToBase64String (resultArray, 0, resultArray.Length);
+			
+		}
+
+		public static string EncryptString (int value, string bkey)
+		{
+			return EncryptString (value.ToString (), bkey);
+			
+		}
+
+		public static string DecryptString (string toDecrypt, string bkey)
+		{
+			byte[] keyArray;
+			byte[] toEncryptArray = Convert.FromBase64String (toDecrypt);
+			
+			MD5CryptoServiceProvider hashmd5 = new MD5CryptoServiceProvider ();
+			keyArray = hashmd5.ComputeHash (UTF8Encoding.UTF8.GetBytes (bkey));
+			
+			TripleDESCryptoServiceProvider tdes = new TripleDESCryptoServiceProvider ();
+			tdes.Key = keyArray;
+			tdes.Mode = CipherMode.ECB;
+			tdes.Padding = PaddingMode.PKCS7;
+			
+			ICryptoTransform cTransform = tdes.CreateDecryptor ();
+			byte[] resultArray = cTransform.TransformFinalBlock (toEncryptArray, 0, toEncryptArray.Length);
+			
+			return UTF8Encoding.UTF8.GetString (resultArray);
+		}
+
+	
+	}
+
+	public class Password
+	{
+		public static string GetNewPassword (int passwordLength)
+		{
+			return GetNewPassword (passwordLength, "");
+			
+		}
+
+		public static string GetNewPassword (int passwordLength, string exclusions)
+		{
+			Password pw = new Password (passwordLength);
+			pw.Exclusions = exclusions;
+			
+			return pw.Generate ();
+			
+		}
+		
+		public static string GetNewPassword (int passwordLength, bool excludeSpecialCharacters)
+		{
+			Password pw = new Password (passwordLength);
+			pw.ExcludeSymbols = true;
+			
+			return pw.Generate ();
+			
+		}
+
+		public static bool ValidatePassword (string password)
+		{
+			Regex reg = new Regex ("^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{10,16}$");
+			
+			return reg.IsMatch (password);
+			
+		}
+
+		public Password (int passwordLength)
+		{
+			pwdCharArray = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&()-_=+[]{}\\,<.>/?".ToCharArray ();
+			
+			Minimum = passwordLength;
+			
+			if (int.MaxValue - 2 >= passwordLength)
+				Maximum = passwordLength + 2;
+			
+			ConsecutiveCharacters = false;
+			RepeatCharacters = true;
+			ExcludeSymbols = false;
+			Exclusions = null;
+			
+			rng = new RNGCryptoServiceProvider ();
+		}
+
+		protected int GetCryptographicRandomNumber (int lowerBound, int upperBound)
+		{
+			int urndnum;
+			byte[] rndnum = new byte[] { 0, 0, 0, 0 };
+			
+			if (upperBound >= 1) {
+				if (lowerBound == upperBound - 1) {
+					return lowerBound;
+					
+				}
+				
+			}
+			
+			int xcludeRndBase = int.MaxValue - (int.MaxValue % System.Convert.ToInt32 (upperBound - lowerBound));
+			
+			do {
+				rng.GetBytes (rndnum);
+				urndnum = System.BitConverter.ToInt32 (rndnum, 0);
+			} while (urndnum >= xcludeRndBase);
+			
+			return System.Convert.ToInt32 ((urndnum % (upperBound - lowerBound)) + lowerBound);
+			
+		}
+
+		protected char GetRandomCharacter ()
+		{
+			int upperBound = pwdCharArray.GetUpperBound (0);
+			
+			if (this.ExcludeSymbols) {
+				upperBound = Password.UBoundDigit;
+			}
+			
+			int randomCharPosition = GetCryptographicRandomNumber (pwdCharArray.GetLowerBound (0), upperBound);
+			
+			if (randomCharPosition < 0) {
+				randomCharPosition = randomCharPosition * -1;
+			}
+			
+			char randomChar = pwdCharArray[randomCharPosition];
+			
+			return randomChar;
+			
+		}
+
+		protected string Generate ()
+		{
+			
+			//// Pick random length between minimum and maximum
+			int pwdLength = GetCryptographicRandomNumber (this.Minimum, this.Maximum);
+			
+			StringBuilder pwdBuffer = new StringBuilder ();
+			pwdBuffer.Capacity = this.Maximum;
+			
+			//// Generate random characters
+			char lastCharacter;
+			char nextCharacter;
+			
+			//// Initial dummy character flag
+			lastCharacter = (char)10;
+			nextCharacter = (char)10;
+			
+			int i = 0;
+			
+			for (i = 0; i <= pwdLength; i++) {
+				
+				nextCharacter = GetRandomCharacter ();
+				
+				if (!this.ConsecutiveCharacters) {
+					while (lastCharacter == nextCharacter) {
+						nextCharacter = GetRandomCharacter ();
+					}
+				}
+				
+				if (!this.RepeatCharacters) {
+					
+					string temp = pwdBuffer.ToString ();
+					int duplicateIndex = temp.IndexOf (nextCharacter);
+					while (-1 != duplicateIndex) {
+						nextCharacter = GetRandomCharacter ();
+						duplicateIndex = temp.IndexOf (nextCharacter);
+					}
+				}
+				
+				if (this.Exclusions != null) {
+					while (-1 != this.Exclusions.IndexOf (nextCharacter)) {
+						nextCharacter = GetRandomCharacter ();
+					}
+				}
+				pwdBuffer.Append (nextCharacter);
+				lastCharacter = nextCharacter;
+			}
+			
+			if (null != pwdBuffer) {
+				return pwdBuffer.ToString ();
+				
+			} else {
+				
+				return string.Empty;
+			}
+		}
+
+		public string Exclusions {
+			get { return this.exclusionSet; }
+			set { this.exclusionSet = value; }
+		}
+
+		public int Minimum {
+			get { return this.minSize; }
+			set {
+				this.minSize = value;
+				if (Password.DefaultMinimum > this.minSize) {
+					this.minSize = Password.DefaultMinimum;
+				}
+			}
+		}
+
+		public int Maximum {
+			get { return this.maxSize; }
+			set {
+				this.maxSize = value;
+				if (this.minSize >= this.maxSize) {
+					this.maxSize = Password.DefaultMaximum;
+				}
+			}
+		}
+
+		public bool ExcludeSymbols {
+			get { return this.hasSymbols; }
+			set { this.hasSymbols = value; }
+		}
+
+		public bool RepeatCharacters {
+			get { return this.hasRepeating; }
+			set { this.hasRepeating = value; }
+		}
+
+		public bool ConsecutiveCharacters {
+			get { return this.hasConsecutive; }
+			set { this.hasConsecutive = value; }
+		}
+
+		private const int DefaultMinimum = 8;
+		private const int DefaultMaximum = 10;
+		private const int UBoundDigit = 61;
+
+		private RNGCryptoServiceProvider rng;
+		private int minSize;
+		private int maxSize;
+		private bool hasRepeating;
+		private bool hasConsecutive;
+		private bool hasSymbols;
+		private string exclusionSet;
+		private char[] pwdCharArray;
+		
+	}
+
 }

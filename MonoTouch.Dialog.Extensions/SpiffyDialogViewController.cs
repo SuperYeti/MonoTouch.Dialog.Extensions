@@ -11,23 +11,41 @@ namespace MonoTouch.Dialog.Extensions
 	{
 	    UIImage bgImage;
 		
-	    public SpiffyDialogViewController (RootElement root, bool pushing, UIImage bgImage) 
+		public UIImage BgImage
+		{
+			get
+			{
+				return bgImage;
+			}
+			set
+			{
+				bgImage = value;
+				LoadView();
+			}
+		}
+		
+		public SpiffyDialogViewController (RootElement root, bool pushing, UIImage bgImage) 
 	    : base (root, pushing) 
 	    {
-	        this.bgImage = bgImage;
+			this.bgImage = bgImage;
 	    }
 	
 	    public override void LoadView ()
 	    {
 	        base.LoadView ();
-	        var color = UIColor.FromPatternImage(bgImage);
-	        
-			if(TableView.RespondsToSelector(new Selector("backgroundView")))
-				TableView.BackgroundView = new UIView();
 			
-			TableView.BackgroundColor = UIColor.Clear;
-			
-			ParentViewController.View.BackgroundColor = color;
+			if(bgImage != null)
+			{
+		        var color = UIColor.FromPatternImage(bgImage);
+		        
+				if(TableView.RespondsToSelector(new Selector("backgroundView")))
+					TableView.BackgroundView = new UIView();
+				
+				TableView.BackgroundColor = UIColor.Clear;
+				
+				ParentViewController.View.BackgroundColor = color;
+				
+			}
 			
 	    }
 		
