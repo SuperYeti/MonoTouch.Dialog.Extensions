@@ -29,8 +29,8 @@ namespace MonoTouch.Dialog.Extensions
 	    {
 			this.bgImage = bgImage;
 	    }
-	
-	    public override void LoadView ()
+		
+		public override void LoadView ()
 	    {
 	        base.LoadView ();
 			
@@ -42,9 +42,7 @@ namespace MonoTouch.Dialog.Extensions
 					TableView.BackgroundView = new UIView();
 				
 				TableView.BackgroundColor = UIColor.Clear;
-				
 				ParentViewController.View.BackgroundColor = color;
-				
 			}
 			
 	    }
@@ -52,4 +50,3 @@ namespace MonoTouch.Dialog.Extensions
 	}
 	
 }
-
