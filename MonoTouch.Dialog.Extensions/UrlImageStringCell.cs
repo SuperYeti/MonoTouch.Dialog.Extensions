@@ -35,9 +35,13 @@ using MonoTouch.Foundation;
 using MonoTouch.UIKit;
 using MonoTouch.CoreGraphics;
 using MonoTouch.Dialog;
+using MonoTouch.Dialog.Utilities;
 
 namespace MonoTouch.Dialog.Extensions
 {
+	//TODO: Must fix this.  While merging the LRU, ImageLoader, and Graphics cores into MT.d
+	//it was a breaking change.  I will fix it later.
+	/*
 	public class UrlImageStringCell : UITableViewCell, IImageUpdated {
 		// Do these as static to reuse across all instances
 		const int textSize = 15;
@@ -139,7 +143,7 @@ namespace MonoTouch.Dialog.Extensions
 			textLabel.Frame = tmp;
 		}
 		
-		void IImageUpdated.UpdatedImage (long onId)
+		void IImageUpdated.UpdatedImage (Uri uri)
 		{
 			// Discard notifications that might have been queued for an old cell
 			if(this.id != onId)
@@ -154,6 +158,8 @@ namespace MonoTouch.Dialog.Extensions
 			
 			imageView.Alpha = 1;
 			UIView.CommitAnimations ();
+			
+			throw new NotImplementedException("UrlImageStringCell::IImageUpdated.UpdatedImage must implement broken with latest merge from trunk");
 		}
 	}
 	
@@ -201,4 +207,5 @@ namespace MonoTouch.Dialog.Extensions
 		}
 		#endregion
 	}
+	*/
 }

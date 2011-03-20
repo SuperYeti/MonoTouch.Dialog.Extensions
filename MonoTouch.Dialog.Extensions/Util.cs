@@ -38,6 +38,11 @@ using System.Reflection;
 using System.Xml.Serialization;
 using System.Text.RegularExpressions;
 using MonoTouch;
+using System.Diagnostics;
+using MonoTouch.Dialog;
+using MonoTouch.CoreLocation;
+using System.Globalization;
+using System.Drawing;
 
 namespace MonoTouch.Dialog.Extensions
 {
@@ -197,7 +202,51 @@ namespace MonoTouch.Dialog.Extensions
 			});
 			
 		}
-	
+		
+		public static void ReportError (UIViewController current, Exception e, string msg)
+		{
+			var root = new RootElement (Locale.GetText ("Error")) {
+				new Section (Locale.GetText ("Error")) {
+					new StyledStringElement (msg){
+						Font = UIFont.BoldSystemFontOfSize (14),
+					}
+				}
+			};
+			
+			if (e != null){
+				root.Add (new Section (e.GetType ().ToString ()){
+					new StyledStringElement (e.Message){
+						Font = UIFont.SystemFontOfSize (14),
+					}
+				});
+				root.Add (new Section ("Stacktrace"){
+					new StyledStringElement (e.ToString ()){
+						Font = UIFont.SystemFontOfSize (14),
+					}
+				});
+			};
+			
+			// Delay one second, as UIKit does not like to present
+			// views in the middle of an animation.
+			NSTimer.CreateScheduledTimer (TimeSpan.FromSeconds (1), delegate {
+				UINavigationController nav = null;
+				DialogViewController dvc = new DialogViewController (root);
+				dvc.NavigationItem.LeftBarButtonItem = new UIBarButtonItem (Locale.GetText ("Close"), UIBarButtonItemStyle.Plain, delegate {
+					nav.DismissModalViewControllerAnimated (false);
+				});
+				
+				nav = new UINavigationController (dvc);
+				current.PresentModalViewController (nav, false);	
+			});
+		}
+		
+		static UIActionSheet sheet;
+		public static UIActionSheet GetSheet (string title)
+		{
+			sheet = new UIActionSheet (title);
+			return sheet;
+		}
+		
 	}
 	
 	public static class Device
@@ -484,5 +533,230 @@ namespace MonoTouch.Dialog.Extensions
 		private char[] pwdCharArray;
 		
 	}
+	
+	public static class Util1
+	{
+		public static DateTime LastUpdate (string key)
+		{
+			var s = Defaults.StringForKey (key);
+			if (s == null)
+				return DateTime.MinValue;
+			long ticks;
+			if (Int64.TryParse (s, out ticks))
+				return new DateTime (ticks, DateTimeKind.Utc);
+			else
+				return DateTime.MinValue;
+		}
+		
+		public static bool NeedsUpdate (string key, TimeSpan timeout)
+		{
+			return DateTime.UtcNow - LastUpdate (key) > timeout;
+		}
+		
+		public static void RecordUpdate (string key)
+		{
+			Defaults.SetString (key, DateTime.UtcNow.Ticks.ToString ());
+		}
+			
+		
+		public static NSUserDefaults Defaults = NSUserDefaults.StandardUserDefaults;
+				
+		const long TicksOneDay = 864000000000;
+		const long TicksOneHour = 36000000000;
+		const long TicksMinute = 600000000;
+		
+		static string s1 = Locale.GetText ("1 sec");
+		static string sn = Locale.GetText (" secs");
+		static string m1 = Locale.GetText ("1 min");
+		static string mn = Locale.GetText (" mins");
+		static string h1 = Locale.GetText ("1 hour");
+		static string hn = Locale.GetText (" hours");
+		static string d1 = Locale.GetText ("1 day");
+		static string dn = Locale.GetText (" days");
+		
+		public static string FormatTime (TimeSpan ts)
+		{
+			int v;
+			
+			if (ts.Ticks < TicksMinute){
+				v = ts.Seconds;
+				if (v <= 1)
+					return s1;
+				else
+					return v + sn;
+			} else if (ts.Ticks < TicksOneHour){
+				v = ts.Minutes;
+				if (v == 1)
+					return m1;
+				else
+					return v + mn;
+			} else if (ts.Ticks < TicksOneDay){
+				v = ts.Hours;
+				if (v == 1)
+					return h1;
+				else
+					return v + hn;
+			} else {
+				v = ts.Days;
+				if (v == 1)
+					return d1;
+				else
+					return v + dn;
+			}
+		}
+		
+		public static string StripHtml (string str)
+		{
+			if (str.IndexOf ('<') == -1)
+				return str;
+			var sb = new StringBuilder ();
+			for (int i = 0; i < str.Length; i++){
+				char c = str [i];
+				if (c != '<'){
+					sb.Append (c);
+					continue;
+				}
+				
+				for (i++; i < str.Length; i++){
+					c =  str [i];
+					if (c == '"' || c == '\''){
+						var last = c;
+						for (i++; i < str.Length; i++){
+							c = str [i];
+							if (c == last)
+								break;
+							if (c == '\\')
+								i++;
+						}
+					} else if (c == '>')
+						break;
+				}
+			}
+			return sb.ToString ();
+		}
+		
+		public static string CleanName (string name)
+		{
+			if (name.Length == 0)
+				return "";
+			
+			bool clean = true;
+			foreach (char c in name){
+				if (Char.IsLetterOrDigit (c) || c == '_')
+					continue;
+				clean = false;
+				break;
+			}
+			if (clean)
+				return name;
+			
+			var sb = new StringBuilder ();
+			foreach (char c in name){
+				if (!Char.IsLetterOrDigit (c))
+					break;
+				
+				sb.Append (c);
+			}
+			return sb.ToString ();
+		}
+		
+		public static RootElement MakeProgressRoot (string caption)
+		{
+			return new RootElement (caption){
+				new Section (){
+					new ActivityElement ()
+				}
+			};
+		}
+		
+		public static RootElement MakeError (string diagMsg)
+		{
+			return new RootElement (Locale.GetText ("Error")){
+				new Section (Locale.GetText ("Error")){
+					new MultilineElement (Locale.GetText ("Unable to retrieve the information"))
+				}
+			};
+		}
+		
+		static long lastTime;
+		[Conditional ("TRACE")]
+		public static void ReportTime (string s)
+		{
+			long now = DateTime.UtcNow.Ticks;
+			
+			Console.WriteLine ("[{0}] ticks since last invoke: {1}", s, now-lastTime);
+			lastTime = now;
+		}
+		
+		[Conditional ("TRACE")]
+		public static void Log (string format, params object [] args)
+		{
+			Console.WriteLine (String.Format (format, args));
+		}
+		
+		public static void LogException (string text, Exception e)
+		{
+			using (var s = System.IO.File.AppendText (Util.BaseDir + "/Documents/crash.log")){
+				var msg = String.Format ("On {0}, message: {1}\nException:\n{2}", DateTime.Now, text, e.ToString());
+				s.WriteLine (msg);
+				Console.WriteLine (msg);
+			}
+		}
+			
+		
+		static CultureInfo americanCulture;
+		public static CultureInfo AmericanCulture {
+			get {
+				if (americanCulture == null)
+					americanCulture = new CultureInfo ("en-US");
+				return americanCulture;
+			}
+		}
+		#region Location
+		
+		internal class MyCLLocationManagerDelegate : CLLocationManagerDelegate {
+			Action<CLLocation> callback;
+			
+			public MyCLLocationManagerDelegate (Action<CLLocation> callback)
+			{
+				this.callback = callback;
+			}
+			
+			public override void UpdatedLocation (CLLocationManager manager, CLLocation newLocation, CLLocation oldLocation)
+			{
+				manager.StopUpdatingLocation ();
+				locationManager = null;
+				callback (newLocation);
+			}
+			
+			public override void Failed (CLLocationManager manager, NSError error)
+			{
+				callback (null);
+			}
+			
+		}
+
+		static CLLocationManager locationManager;
+		static public void RequestLocation (Action<CLLocation> callback)
+		{
+			locationManager = new CLLocationManager () {
+				DesiredAccuracy = CLLocation.AccuracyBest,
+				Delegate = new MyCLLocationManagerDelegate (callback),
+				DistanceFilter = 1000f
+			};
+			if (CLLocationManager.LocationServicesEnabled)
+				locationManager.StartUpdatingLocation ();
+		}	
+		#endregion
+	}
+	
+	public static class StringUtil
+	{
+		public static string SeperateCamelCase(string value)
+		{
+			return Regex.Replace(value, "((?<=[a-z])[A-Z]|[A-Z](?=[a-z]))", " $1").Trim();
+		}
+	}
+
 
 }

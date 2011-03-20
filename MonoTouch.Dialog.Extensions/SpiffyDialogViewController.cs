@@ -9,7 +9,7 @@ namespace MonoTouch.Dialog.Extensions
 {
 	public class SpiffyDialogViewController : DialogViewController 
 	{
-	    UIImage bgImage;
+		UIImage bgImage;
 		
 		public UIImage BgImage
 		{
@@ -25,7 +25,7 @@ namespace MonoTouch.Dialog.Extensions
 		}
 		
 		public SpiffyDialogViewController (RootElement root, bool pushing, UIImage bgImage) 
-	    : base (root, pushing) 
+	    	: base (root, pushing)
 	    {
 			this.bgImage = bgImage;
 	    }
@@ -41,11 +41,28 @@ namespace MonoTouch.Dialog.Extensions
 				if(TableView.RespondsToSelector(new Selector("backgroundView")))
 					TableView.BackgroundView = new UIView();
 				
-				TableView.BackgroundColor = UIColor.Clear;
-				ParentViewController.View.BackgroundColor = color;
+				if(ParentViewController != null)
+				{
+					TableView.BackgroundColor = UIColor.Clear;
+					ParentViewController.View.BackgroundColor = color;
+				}
+				else
+				{
+					TableView.BackgroundColor = color;
+				}
+				
 			}
 			
 	    }
+		
+		public event EventHandler ViewAppearing;
+		
+		public override void ViewWillAppear (bool animated)
+		{
+			base.ViewWillAppear (animated);
+			if (ViewAppearing != null)
+				ViewAppearing (this, EventArgs.Empty);
+		}
 		
 	}
 	
