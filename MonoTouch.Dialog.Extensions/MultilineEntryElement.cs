@@ -109,10 +109,15 @@ namespace MonoTouch.Dialog.Extensions
 				};
 				entry.ReturnKeyType = UIReturnKeyType.Done;
 				entry.Changed += delegate(object sender, EventArgs e) {
-					int i = entry.Text.IndexOf("\n", entry.Text.Length -1);
+					int iTextLength = 0;
+					
+					if(entry.Text.Length > 0)
+						iTextLength = entry.Text.Length - 1;
+					
+					int i = entry.Text.IndexOf("\n", iTextLength);
 					if (i > -1)
 					{
-						entry.Text = entry.Text.Substring(0,entry.Text.Length -1); 
+						entry.Text = entry.Text.Substring(0,iTextLength); 
 						entry.ResignFirstResponder();	
 					}
 				};
