@@ -10,9 +10,9 @@
     <OutputType>Library</OutputType>
     <RootNamespace>MonoTouch.Dialog.Extensions</RootNamespace>
     <MtouchSdkVersion>3.0</MtouchSdkVersion>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v1.0</TargetFrameworkVersion>
     <MtouchMinimumOS>3.0</MtouchMinimumOS>
-    <ReleaseVersion>0.9</ReleaseVersion>
+    <ReleaseVersion>1.2</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
@@ -99,11 +99,6 @@
     <Reference Include="monotouch" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ProjectExtensions>
-    <MonoDevelop>
-      <Properties InternalTargetFrameworkVersion="IPhone" />
-    </MonoDevelop>
-  </ProjectExtensions>
   <ItemGroup>
     <Compile Include="IndexedLinkedList.cs" />
     <Compile Include="Util.cs" />
@@ -112,6 +107,9 @@
     <Compile Include="Locale.cs" />
     <Compile Include="Images\Images.cs" />
     <Compile Include="MultilineEntryElement.cs" />
+    <Compile Include="InchFractionElement.cs" />
+    <Compile Include="InchFractionPickerModel.cs" />
+    <Compile Include="Fraction.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Images\" />
