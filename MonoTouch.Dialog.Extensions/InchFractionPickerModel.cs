@@ -139,7 +139,7 @@ namespace MonoTouch.Dialog.Extensions
 		
 		public void UpdateSelection(UIPickerView uipv)
 		{
-			if(selectedInches != null)
+			if(selectedInches > 0)
 			{
 				for(int i = 0; i < Inches.Length; i++)
 				{

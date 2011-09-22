@@ -1,6 +1,5 @@
 using System;
 using MonoTouch.Dialog;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,7 +14,6 @@ namespace MonoTouch.Dialog.Extensions
 	public class MultilineEntryElement : Element, IElementSizing  {
 		public string Value;
 		static NSString ekey = new NSString ("EntryElement");
-		bool isPassword;
 		UITextView entry;
 		string placeholder;
 		static UIFont font = UIFont.BoldSystemFontOfSize (17);
