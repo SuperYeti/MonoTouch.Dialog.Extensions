@@ -10,7 +10,7 @@
     <OutputType>Library</OutputType>
     <RootNamespace>MonoTouch.Dialog.Extensions</RootNamespace>
     <MtouchSdkVersion>3.0</MtouchSdkVersion>
-    <ReleaseVersion>1.3</ReleaseVersion>
+    <ReleaseVersion>2.0</ReleaseVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
@@ -88,7 +88,6 @@
     <Compile Include="SpiffyDialogViewController.cs" />
     <Compile Include="Locale.cs" />
     <Compile Include="Images\Images.cs" />
-    <Compile Include="MultilineEntryElement.cs" />
     <Compile Include="InchFractionElement.cs" />
     <Compile Include="InchFractionPickerModel.cs" />
     <Compile Include="Fraction.cs" />
