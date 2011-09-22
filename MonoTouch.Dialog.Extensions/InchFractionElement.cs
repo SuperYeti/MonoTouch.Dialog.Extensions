@@ -124,7 +124,7 @@ namespace MonoTouch.Dialog.Extensions
 			                            
 			vc.View.BackgroundColor = UIColor.Black;
 			vc.View.AddSubview (fractionPicker);
-			dvc.ActivateController (vc, AnimatedPageTurn);
+			dvc.ActivateController (vc, false);
 		}
 	}
 	
