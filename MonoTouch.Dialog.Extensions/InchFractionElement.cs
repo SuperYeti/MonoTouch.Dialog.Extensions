@@ -20,14 +20,14 @@ namespace MonoTouch.Dialog.Extensions
 			Value = realValue.ToString("F2");
 		}
 		
-		public override UITableViewCell GetCell (DialogViewController dvc, UITableView tv)
+		public override UITableViewCell GetCell (UITableView tv)
 		{
 			var iFeet = Math.Floor(RealValue / 12);
 			var iInchesLeft = Math.Floor(RealValue % 12);
 			var iRemainder = Fraction.ToFraction(RealValue - (iFeet * 12) - iInchesLeft);
 			
 			Value = iFeet.ToString() + "' " + iInchesLeft.ToString() + (iRemainder != 0 ? "-" + iRemainder.ToString() : "") + "\""; 
-			return base.GetCell (dvc, tv);
+			return base.GetCell (tv);
 		
 		}
  
@@ -124,7 +124,7 @@ namespace MonoTouch.Dialog.Extensions
 			                            
 			vc.View.BackgroundColor = UIColor.Black;
 			vc.View.AddSubview (fractionPicker);
-			dvc.ActivateController (vc, false);
+			dvc.ActivateController (vc);
 		}
 	}
 	

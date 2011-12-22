@@ -1,13 +1,14 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" ctype="Workspace" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="ExtensionsSample/Main.cs" ctype="Workbench">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|iPhoneSimulator" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="../MonoTouch.Dialog/MonoTouch.Dialog/Utilities/ImageLoader.cs">
     <Files>
-      <File FileName="ExtensionsSample/Main.cs" Line="180" Column="34" />
-      <File FileName="MonoTouch.Dialog.Extensions/ImageStore.cs" Line="182" Column="5" />
-      <File FileName="MonoTouch.Dialog.Extensions/UrlImageStringCell.cs" Line="194" Column="1" />
-      <File FileName="MonoTouch.Dialog.Extensions/SpiffyDialogViewController.cs" Line="22" Column="27" />
-      <File FileName="ExtensionsSample/SpiffyViewDemo.cs" Line="25" Column="3" />
-      <File FileName="../MonoTouch.Dialog/MonoTouch.Dialog/Elements.cs" Line="576" Column="1" />
+      <File FileName="ExtensionsSample/Main.cs" Line="175" Column="1" />
+      <File FileName="MonoTouch.Dialog.Extensions/UrlImageStringCell.cs" Line="96" Column="1" />
+      <File FileName="MonoTouch.Dialog.Extensions/SpiffyDialogViewController.cs" Line="1" Column="1" />
+      <File FileName="ExtensionsSample/SpiffyViewDemo.cs" Line="36" Column="48" />
+      <File FileName="../MonoTouch.Dialog/MonoTouch.Dialog/Elements.cs" Line="56" Column="1" />
+      <File FileName="../MonoTouch.Dialog/MonoTouch.Dialog/Utilities/ImageLoader.cs" Line="228" Column="26" />
+      <File FileName="../../../../Developer/MonoTouch/Source/mono/mcs/class/corlib/System.Threading/EventWaitHandle.cs" Line="41" Column="42" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">
@@ -16,7 +17,11 @@
             <Node name="References" expanded="True" />
             <Node name="MainWindow.xib" expanded="True" />
           </Node>
-          <Node name="MonoTouch.Dialog" expanded="True" />
+          <Node name="MonoTouch.Dialog" expanded="True">
+            <Node name="Utilities" expanded="True">
+              <Node name="ImageLoader.cs" selected="True" />
+            </Node>
+          </Node>
           <Node name="MonoTouch.Dialog.Extensions" expanded="True">
             <Node name="References" expanded="True" />
           </Node>
@@ -25,15 +30,18 @@
       <Pad Id="ClassPad">
         <State expanded="True" selected="True" />
       </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State>
+          <Value>results</Value>
+        </State>
+      </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
-    <BreakpointStore>
-      <Breakpoint file="/Users/Administrator/Projects/MonoTouch.Dialog.Extensions/ExtensionsSample/SpiffyViewDemo.cs" line="29" />
-      <Breakpoint file="/Users/Administrator/Projects/MonoTouch.Dialog.Extensions/MonoTouch.Dialog.Extensions/TwoLineElement.cs" line="29" />
-    </BreakpointStore>
+    <BreakpointStore />
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches ctype="PinnedWatchStore">
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches>
     <Watch file="ExtensionsSample/SpiffyViewDemo.cs" line="50" offsetX="266" offsetY="735" expression="imgBG" liveUpdate="False" />
+    <Watch file="ExtensionsSample/Main.cs" line="139" offsetX="850" offsetY="1726" expression="results" liveUpdate="True" />
   </MonoDevelop.Ide.DebuggingService.PinnedWatches>
 </Properties>

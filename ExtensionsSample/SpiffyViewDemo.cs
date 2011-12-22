@@ -6,6 +6,8 @@ using MonoTouch.UIKit;
 using MonoTouch.CoreGraphics;
 using MonoTouch.Dialog;
 using MonoTouch.Dialog.Extensions;
+using MonoTouch.Dialog.Utilities;
+using System.IO;
 
 namespace ExtensionsSample
 {
@@ -14,7 +16,7 @@ namespace ExtensionsSample
 		UINavigationController navigation;
 		UIImage imgBG;
 		SpiffyDialogViewController sdvc;
-		long id;
+		Uri uri;
 		RootElement root;
 		
 		public SpiffyViewDemo (UINavigationController navigation)
@@ -23,21 +25,23 @@ namespace ExtensionsSample
 			
 		}
 		
-		void IImageUpdated.UpdatedImage (long onId)
+		void IImageUpdated.UpdatedImage (Uri uri)
 		{
 			// Discard notifications that might have been queued for an old cell
-			if(this.id != onId)
+			if(this.uri != uri)
 				return;
-
-			imgBG = ImageStore.GetImage (onId);
 			
+			string picfile = uri.IsFile ? uri.LocalPath : ImageLoader.BaseDir + ImageLoader.md5 (uri.AbsoluteUri);
+			if (File.Exists (picfile))
+				imgBG = UIImage.FromFileUncached (picfile);
+						
 			ShowMe(root, imgBG);
 			
 		}
 		
-		public void Show(long imageId, string imageUrl)
+		public void Show(Uri imageUrl)
 		{
-			id = imageId;
+			this.uri = imageUrl;
 			
 			root = new RootElement("Spiffy Dialog View Controller Demo")
 			{
@@ -47,7 +51,7 @@ namespace ExtensionsSample
 				}
 			};
 			
-			imgBG = ImageStore.RequestImage(imageId, imageUrl, this);
+			imgBG = ImageLoader.DefaultRequestImage(imageUrl, this);
 			
 			if(imgBG != null)
 				ShowMe(root, imgBG);

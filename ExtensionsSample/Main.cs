@@ -35,6 +35,7 @@ using MonoTouch.UIKit;
 using MonoTouch.Dialog.Extensions;
 using MonoTouch.Dialog;
 using System.Drawing;
+using MonoTouch.Dialog.Utilities;
 
 namespace ExtensionsSample
 {
@@ -56,8 +57,7 @@ namespace ExtensionsSample
 			//base.ReceiveMemoryWarning (application);
 			
 			Console.WriteLine ("Low Memory Detected.  Cleaning up LRU image cache");
-			
-			ImageStore.ReclaimMemory ();
+			ImageLoader.Purge();
 			
 		}
 
@@ -128,11 +128,7 @@ namespace ExtensionsSample
 					if (Uri.TryCreate (strPageURL, UriKind.Absolute, out uri)) {
 						string strUrl = uri.ToString ();
 						
-						if (strUrl.ToLower ().IndexOf ("file://") == -1 &&
-					    (strUrl.ToLower ().IndexOf (".jpg") >= 0 ||
-					    strUrl.ToLower ().IndexOf (".jpeg") >= 0 ||
-					    strUrl.ToLower ().IndexOf (".png") >= 0 )
-					    )
+						if (strUrl.ToLower ().IndexOf ("file://") == -1)
 							results.Add (strUrl);
 						
 					}
@@ -164,8 +160,8 @@ namespace ExtensionsSample
 	
 		void CreateImages (string searchTerm)
 		{
-			ImageStore.ClearCache();
-
+			ImageLoader.Purge();
+				
 			int i = 1;
 			RootElement root = new RootElement (searchTerm + " Results");
 			SpiffyViewDemo svd;
@@ -174,17 +170,14 @@ namespace ExtensionsSample
 			{
 				foreach (string result in SearchImages (searchTerm, 1, 100, false)) 
 				{
-					long imageId = i;
-					string imageUrl = result;
+					Uri imageUrl = new Uri(result);
 					
-					UIFont fTest = new UIFont();
-					
-					UrlImageStringElement element = new UrlImageStringElement (result, i, result);
+					UrlImageStringElement element = new UrlImageStringElement (result, imageUrl);
 					
 					element.Tapped += delegate
 					{
 						svd = new SpiffyViewDemo(navigation);
-						svd.Show(imageId, imageUrl);
+						svd.Show(imageUrl);
 						
 					};
 					
@@ -199,6 +192,7 @@ namespace ExtensionsSample
 			navigation.PushViewController (dvc, true);
 			
 		}
+		
 		
 		void HandleSearchDelegateOnSearch (object sender, EventArgs e)
 		{

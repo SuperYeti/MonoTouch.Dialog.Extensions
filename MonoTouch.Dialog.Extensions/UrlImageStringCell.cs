@@ -39,9 +39,6 @@ using MonoTouch.Dialog.Utilities;
 
 namespace MonoTouch.Dialog.Extensions
 {
-	//TODO: Must fix this.  While merging the LRU, ImageLoader, and Graphics cores into MT.d
-	//it was a breaking change.  I will fix it later.
-	/*
 	public class UrlImageStringCell : UITableViewCell, IImageUpdated {
 		// Do these as static to reuse across all instances
 		const int textSize = 15;
@@ -58,8 +55,7 @@ namespace MonoTouch.Dialog.Extensions
 		
 		static UIFont textFont = UIFont.SystemFontOfSize (textSize);
 		
-		long id;
-		string imageUrl;
+		Uri imageUrl;
 		string caption;
 		
 		UILabel textLabel;
@@ -70,10 +66,9 @@ namespace MonoTouch.Dialog.Extensions
 		}
 		
 		// Create the UIViews that we will use here, layout happens in LayoutSubviews
-		public UrlImageStringCell (UITableViewCellStyle style, NSString ident, string caption, long id, string imageUrl) : base (style, ident)
+		public UrlImageStringCell (UITableViewCellStyle style, NSString ident, string caption, Uri imageUrl) : base (style, ident)
 		{
 			this.caption = caption;
-			this.id = id;
 			this.imageUrl = imageUrl;
 			SelectionStyle = UITableViewCellSelectionStyle.Blue;
 			
@@ -86,7 +81,7 @@ namespace MonoTouch.Dialog.Extensions
 			
 			imageView = new UIImageView (new RectangleF (PicXPad, PicYPad, PicSize, PicSize));
 			
-			UpdateCell (caption, id, imageUrl);
+			UpdateCell (caption, imageUrl);
 			
 			ContentView.Add (textLabel);
 			ContentView.Add (imageView);
@@ -96,19 +91,18 @@ namespace MonoTouch.Dialog.Extensions
 		// This method is called when the cell is reused to reset
 		// all of the cell values
 		//
-		public void UpdateCell (string caption, long id, string imageUrl)
+		public void UpdateCell (string caption, Uri imageUrl)
 		{
 			this.caption = caption;
-			this.id = id;
 			this.imageUrl = imageUrl;
 			
 			textLabel.Text = caption;
 			
-			var img = ImageStore.GetImage (id);
-			if (img == null)
-				ImageStore.QueueRequestForImage(id, imageUrl, this);
+			var img = ImageLoader.DefaultRequestImage(imageUrl, this);
 			
-			imageView.Image = img == null ? ImageStore.DefaultImage : img;
+			if(img != null)
+				imageView.Image = img;
+			
 		}
 
 		public static float GetCellHeight (RectangleF bounds, string caption)
@@ -146,20 +140,23 @@ namespace MonoTouch.Dialog.Extensions
 		void IImageUpdated.UpdatedImage (Uri uri)
 		{
 			// Discard notifications that might have been queued for an old cell
-			if(this.id != onId)
+			if(this.imageUrl != uri)
 				return;
-
-			imageView.Alpha = 0;
-			imageView.Image = ImageStore.GetImage (onId);
-			imageView.SizeToFit();
-
+			
 			UIView.BeginAnimations (null, IntPtr.Zero);
 			UIView.SetAnimationDuration (0.5);
-			
+
+			string picfile = uri.IsFile ? uri.LocalPath : ImageLoader.BaseDir + ImageLoader.md5 (uri.AbsoluteUri);
+			if (File.Exists (picfile))
+			{
+				imageView.Alpha = 0;
+				imageView.Image = UIImage.FromFileUncached (picfile);
+				imageView.SizeToFit();
+			}
+						
 			imageView.Alpha = 1;
 			UIView.CommitAnimations ();
 			
-			throw new NotImplementedException("UrlImageStringCell::IImageUpdated.UpdatedImage must implement broken with latest merge from trunk");
 		}
 	}
 	
@@ -169,13 +166,11 @@ namespace MonoTouch.Dialog.Extensions
 	public class UrlImageStringElement : Element, IElementSizing {
 		static NSString key = new NSString ("UrlImageStringElement");
 		string caption;
-		long id;
-		string imageUrl;
+		Uri imageUrl;
 		
-		public UrlImageStringElement (string caption, long id, string imageUrl) : base (null)
+		public UrlImageStringElement (string caption, Uri imageUrl) : base (null)
 		{
 			this.caption = caption;
-			this.id = id;
 			this.imageUrl = imageUrl;
 		}
 		
@@ -184,9 +179,9 @@ namespace MonoTouch.Dialog.Extensions
 		{
 			var cell = tv.DequeueReusableCell (key) as UrlImageStringCell;
 			if (cell == null)
-				cell = new UrlImageStringCell (UITableViewCellStyle.Default, key,caption,id,imageUrl);
+				cell = new UrlImageStringCell (UITableViewCellStyle.Default, key,caption,imageUrl);
 			else
-				cell.UpdateCell (caption,id,imageUrl);
+				cell.UpdateCell (caption,imageUrl);
 			
 			return cell;
 		}
@@ -207,5 +202,5 @@ namespace MonoTouch.Dialog.Extensions
 		}
 		#endregion
 	}
-	*/
+	
 }
